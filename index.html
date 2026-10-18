@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Re:EVA</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/hud.css">
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.min.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="hud" hidden>
+    <div class="panel unit">
+      <div class="tag">EVA</div>
+      <div class="name">UNIDAD-01</div>
+      <div class="row"><span>CABLE</span><b id="hud-cable">CONECTADO</b></div>
+      <div class="row"><span>ENERGÍA</span><b id="hud-power">∞</b></div>
+      <div class="row"><span>VELOCIDAD</span><b id="hud-speed">0</b></div>
+    </div>
+    <div class="panel help">
+      WASD / stick izq. mover · Ratón / stick der. cámara<br>
+      Espacio / B paso lateral · Clic / X, Y ataques (placeholder)<br>
+      R modo N64/PS2 · M música · Esc soltar ratón
+    </div>
+    <div id="hud-retro" class="badge" hidden>N64 / PS2</div>
+  </div>
+
+  <div id="start">
+    <div class="hex"></div>
+    <h1>Re:EVA</h1>
+    <p>Evangelion: Bardiel contenido</p>
+    <button id="start-button">ACTIVAR</button>
+    <small>Fangame no comercial</small>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
