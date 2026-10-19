@@ -137,7 +137,8 @@ export class Eva {
     const speed = Math.hypot(this.velocity.x, this.velocity.z);
     const stride = Math.min(speed / this.maxSpeed, 1);
     const previous = Math.sin(this._walkPhase);
-    this._walkPhase += dt * (1.2 + stride * 2.2) * stride * Math.PI;
+    // Cadencia de algo más de un paso por segundo a máxima velocidad: un cuerpo de 40 m no da pasitos.
+    this._walkPhase += dt * (0.5 + stride * 0.8) * Math.min(stride * 3, 1) * Math.PI;
     const s = Math.sin(this._walkPhase);
     if (stride > 0.1 && Math.sign(s) !== Math.sign(previous)) this.onFootstep?.(stride);
 

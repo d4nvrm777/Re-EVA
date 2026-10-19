@@ -43,25 +43,29 @@ try {
   const facing = [-Math.sin(state.yaw), -Math.cos(state.yaw)];
   if ((facing[0] * dx + facing[1] * dz) / moved < 0.9) failures.push('el Eva no encara la dirección de movimiento');
 
-  // Colisión: lanzar al Eva contra un edificio y comprobar que no lo atraviesa.
-  // Hay un edificio en x=0, z=-280; sin colisión el Eva acabaría más allá de z=-300.
-  await page.evaluate(() => {
-    const { eva, cameraRig } = window.__reeva;
-    eva.position.set(0, 0, -150);
+  // Colisión: colocar al Eva 60 m delante de la fachada sur del edificio más cercano al origen
+  // y hacerlo andar hacia ella; sin colisión acabaría más de 100 m detrás de la fachada.
+  const wall = await page.evaluate(() => {
+    const { eva, cameraRig, arena } = window.__reeva;
+    const box = arena.boxes
+      .filter((b) => b.maxX - b.minX > 2 * eva.radius)
+      .sort((a, b) => Math.hypot((a.minX + a.maxX) / 2, a.maxZ) - Math.hypot((b.minX + b.maxX) / 2, b.maxZ))[0];
+    eva.position.set((box.minX + box.maxX) / 2, 0, box.maxZ + 60);
     eva.velocity.set(0, 0, 0);
     eva.yaw = 0;
     cameraRig.yaw = 0;
+    return box.maxZ;
   });
   await page.keyboard.down('KeyW');
   await simulate(page, 8);
   await page.keyboard.up('KeyW');
   const afterWall = await page.evaluate(() => window.__reeva.eva.position.toArray());
-  if (afterWall[2] < -275) failures.push(`el Eva atravesó los edificios (z=${afterWall[2].toFixed(0)})`);
+  if (afterWall[2] < wall) failures.push(`el Eva atravesó un edificio (fachada z=${wall.toFixed(0)}, Eva z=${afterWall[2].toFixed(0)})`);
 
   if (process.argv[2]) await page.screenshot({ path: process.argv[2] });
   failures.push(...errors.map((e) => `error en consola: ${e}`));
 
-  if (failures.length === 0) console.log(`SMOKE OK: desplazamiento ${moved.toFixed(1)} m, frenado contra edificios en z=${afterWall[2].toFixed(0)}`);
+  if (failures.length === 0) console.log(`SMOKE OK: desplazamiento ${moved.toFixed(1)} m, frenado a ${(afterWall[2] - wall).toFixed(1)} m de la fachada`);
   else failures.forEach((f) => console.error('SMOKE FAIL:', f));
 } finally {
   await browser.close();

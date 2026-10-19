@@ -6,9 +6,9 @@ export class ThirdPersonCamera {
     this.camera = camera;
     this.obstacles = obstacles;
 
-    this.pivotHeight = 34;
-    this.armLength = 70;
-    this.shoulderOffset = 12;
+    this.pivotHeight = 30;
+    this.armLength = 85;
+    this.shoulderOffset = 14;
     this.followSpeed = 6;
     this.mouseSensitivity = 0.0025;
     this.stickSensitivity = 2.2;
@@ -19,6 +19,13 @@ export class ThirdPersonCamera {
     this.pitch = THREE.MathUtils.degToRad(-18);
     this.pivot = new THREE.Vector3();
     this._raycaster = new THREE.Raycaster();
+    this._shake = 0;
+    this._time = 0;
+  }
+
+  /** Sacudida al pisar o recibir golpes; amount en 0..1, se va apagando sola. */
+  shake(amount) {
+    this._shake = Math.min(this._shake + amount, 1);
   }
 
   snapTo(position) {
@@ -55,5 +62,12 @@ export class ThirdPersonCamera {
 
     this.camera.position.copy(this.pivot).addScaledVector(direction, length);
     this.camera.rotation.copy(rotation);
+
+    this._time += dt;
+    if (this._shake > 0.001) {
+      this.camera.position.y += Math.sin(this._time * 38) * this._shake * 1.6;
+      this.camera.rotation.z += Math.sin(this._time * 27) * this._shake * 0.01;
+      this._shake *= Math.exp(-6 * dt);
+    }
   }
 }

@@ -13,7 +13,7 @@ renderer.shadowMap.enabled = true;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(65, 1, 0.5, 6000);
+const camera = new THREE.PerspectiveCamera(60, 1, 0.5, 6000);
 const arena = buildArena(scene);
 const eva = new Eva(scene);
 const cameraRig = new ThirdPersonCamera(camera, arena.meshes);
@@ -27,7 +27,10 @@ const hud = {
 };
 
 let retro = new URLSearchParams(location.search).has('retro');
-eva.onFootstep = (strength) => audio.footstep(strength);
+eva.onFootstep = (strength) => {
+  audio.footstep(strength);
+  cameraRig.shake(0.5 * strength);
+};
 eva.onAttack = (kind) => console.debug('ataque', kind);
 cameraRig.yaw = eva.yaw;
 cameraRig.snapTo(eva.position);
@@ -92,4 +95,4 @@ document.getElementById('start-button').addEventListener('click', () => {
 });
 
 // Acceso para pruebas automáticas y depuración desde la consola.
-window.__reeva = { eva, cameraRig, input, step };
+window.__reeva = { eva, cameraRig, input, arena, step };
