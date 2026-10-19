@@ -1,0 +1,136 @@
+:root {
+  --nerv-orange: #ff8a1f;
+  --nerv-red: #e0262b;
+  --nerv-green: #6fd13a;
+  --panel: rgba(12, 6, 4, 0.72);
+}
+
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  color: var(--nerv-orange);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+#view {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Modo N64/PS2: se renderiza a baja resolución y se escala sin suavizado. */
+body.retro #view { image-rendering: pixelated; }
+
+#hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.panel {
+  position: absolute;
+  background: var(--panel);
+  border: 1px solid var(--nerv-orange);
+  padding: 10px 14px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.unit {
+  top: 16px;
+  left: 16px;
+  min-width: 220px;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+
+.unit .tag {
+  display: inline-block;
+  background: var(--nerv-red);
+  color: #000;
+  font-weight: 700;
+  padding: 0 6px;
+}
+
+.unit .name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 4px 0 8px;
+}
+
+.unit .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.unit .row b { color: var(--nerv-green); }
+
+.help {
+  bottom: 16px;
+  left: 16px;
+  font-size: 12px;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--nerv-red);
+  color: #000;
+  font-weight: 700;
+  padding: 4px 10px;
+}
+
+#start {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: radial-gradient(circle at center, #2a0d06 0%, #000 70%);
+}
+
+#start .hex {
+  width: 96px;
+  height: 110px;
+  background: var(--nerv-red);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+#start h1 {
+  margin: 8px 0 0;
+  font-size: 56px;
+  letter-spacing: 0.12em;
+}
+
+#start p { margin: 0 0 16px; }
+
+#start button {
+  pointer-events: auto;
+  background: transparent;
+  color: var(--nerv-orange);
+  border: 2px solid var(--nerv-orange);
+  padding: 10px 36px;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
+
+#start button:hover { background: var(--nerv-orange); color: #000; }
+
+#start small { opacity: 0.6; margin-top: 16px; }
+
+@media (max-width: 600px) {
+  .help { display: none; }
+  #start h1 { font-size: 40px; }
+}
